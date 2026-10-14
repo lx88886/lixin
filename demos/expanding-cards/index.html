@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 01 · 展开式卡片</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #0f172a;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    min-height: 100vh; padding: 24px;
+  }
+  h1 { color: #e2e8f0; font-size: 22px; margin-bottom: 24px; letter-spacing: 2px; }
+
+  .panels { display: flex; width: 100%; max-width: 900px; height: 70vh; border-radius: 18px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+
+  .panel {
+    flex: 0.6; cursor: pointer; position: relative;
+    transition: flex .55s cubic-bezier(.61,.05,.29,1);
+    display: flex; align-items: flex-end;
+  }
+  .panel.active { flex: 4; }
+
+  /* 每张卡片不同的渐变，代替外部图片，离线也能看 */
+  .panel:nth-child(1) { background: linear-gradient(135deg, #667eea, #764ba2); }
+  .panel:nth-child(2) { background: linear-gradient(135deg, #f093fb, #f5576c); }
+  .panel:nth-child(3) { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+  .panel:nth-child(4) { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+  .panel:nth-child(5) { background: linear-gradient(135deg, #fa709a, #fee140); }
+
+  .panel .label {
+    color: #fff; font-size: 20px; font-weight: 700;
+    padding: 22px; text-shadow: 0 2px 10px rgba(0,0,0,.45);
+    white-space: nowrap;
+    opacity: 0; transform: translateY(12px);
+    transition: opacity .3s ease .15s, transform .3s ease .15s;
+  }
+  .panel.active .label { opacity: 1; transform: translateY(0); }
+
+  .back { position: fixed; top: 20px; left: 20px; color: #94a3b8; text-decoration: none; font-size: 14px; }
+  .back:hover { color: #38bdf8; }
+
+  @media (max-width: 560px) {
+    .panels { height: 60vh; }
+    /* 小屏只保留前三张，避免挤压 */
+    .panel:nth-child(4), .panel:nth-child(5) { display: none; }
+    .panel .label { font-size: 16px; padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<a class="back" href="../../index.html">← 返回合集</a>
+<h1>点击卡片试试</h1>
+
+<div class="panels" id="panels">
+  <div class="panel active"><div class="label">山海之间</div></div>
+  <div class="panel"><div class="label">城市黄昏</div></div>
+  <div class="panel"><div class="label">冰川之上</div></div>
+  <div class="panel"><div class="label">森林清晨</div></div>
+  <div class="panel"><div class="label">沙漠日落</div></div>
+</div>
+
+<script>
+  // 核心逻辑就一件事：点谁，就把 active 挪给谁
+  const panels = document.querySelectorAll('.panel');
+  panels.forEach(panel => {
+    panel.addEventListener('click', () => {
+      panels.forEach(p => p.classList.remove('active'));
+      panel.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

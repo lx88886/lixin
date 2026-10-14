@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 02 · 分屏着陆页</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    height: 100vh; overflow: hidden; color: #fff;
+  }
+
+  .container { position: relative; width: 100%; height: 100%; background: #333; }
+
+  /* 左右两屏各占一半；悬停时通过容器上的类名改变 flex 比例 */
+  .split {
+    position: absolute; top: 0; width: 50%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: width .7s cubic-bezier(.61,.05,.29,1);
+    overflow: hidden;
+  }
+  .split.left  { left: 0;  background: linear-gradient(160deg, rgba(30,58,95,.92), rgba(15,23,42,.92)); }
+  .split.right { right: 0; background: linear-gradient(160deg, rgba(120,53,15,.92), rgba(41,17,9,.92)); }
+
+  /* 背景大字，撑满氛围 */
+  .split::before {
+    content: attr(data-word);
+    position: absolute; font-size: 22vw; font-weight: 900;
+    color: rgba(255,255,255,.05); white-space: nowrap;
+    letter-spacing: 10px; user-select: none;
+  }
+
+  .hover-left .left  { width: 75%; }
+  .hover-left .right { width: 25%; }
+  .hover-right .right { width: 75%; }
+  .hover-right .left { width: 25%; }
+
+  h1 { font-size: clamp(26px, 4vw, 44px); font-weight: 800; margin-bottom: 28px; z-index: 1; text-align: center; }
+  .btn {
+    z-index: 1; text-decoration: none; color: #fff;
+    border: 2px solid #fff; border-radius: 8px;
+    padding: 13px 34px; font-size: 15px; letter-spacing: 2px;
+    transition: background .3s, color .3s;
+  }
+  .left .btn:hover  { background: #38bdf8; border-color: #38bdf8; }
+  .right .btn:hover { background: #fb923c; border-color: #fb923c; }
+
+  .back { position: fixed; top: 20px; left: 20px; z-index: 2; color: #cbd5e1; text-decoration: none; font-size: 14px; }
+  .back:hover { color: #38bdf8; }
+
+  @media (max-width: 560px) {
+    .split { width: 100%; height: 50%; transition: height .7s cubic-bezier(.61,.05,.29,1); }
+    .split.left { top: 0; } .split.right { bottom: 0; right: auto; }
+    .hover-left .left, .hover-right .right { width: 100%; height: 75%; }
+    .hover-left .right, .hover-right .left { width: 100%; height: 25%; }
+    .split::before { font-size: 30vw; }
+  }
+</style>
+</head>
+<body>
+<a class="back" href="../../index.html">← 返回合集</a>
+
+<div class="container" id="container">
+  <section class="split left" data-word="CODE">
+    <h1>从 0 写代码</h1>
+    <a class="btn" href="#">开始学习</a>
+  </section>
+  <section class="split right" data-word="AI">
+    <h1>用 AI 提效</h1>
+    <a class="btn" href="#">看看实践</a>
+  </section>
+</div>
+
+<script>
+  // 鼠标移到哪一侧，就给容器挂上对应的类名（动画全在 CSS 里）
+  const c = document.getElementById('container');
+  const left  = document.querySelector('.split.left');
+  const right = document.querySelector('.split.right');
+  left.addEventListener('mouseenter',  () => c.classList.add('hover-left'));
+  left.addEventListener('mouseleave',  () => c.classList.remove('hover-left'));
+  right.addEventListener('mouseenter', () => c.classList.add('hover-right'));
+  right.addEventListener('mouseleave', () => c.classList.remove('hover-right'));
+</script>
+</body>
+</html>

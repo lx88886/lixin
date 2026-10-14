@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo 03 · 滚动数字看板</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #0f172a; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .board {
+    width: 100%; max-width: 860px;
+    background: #1e293b; border: 1px solid #334155;
+    border-radius: 20px; padding: 56px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  }
+  h1 { color: #e2e8f0; text-align: center; font-size: 24px; margin-bottom: 10px; }
+  .sub { color: #64748b; text-align: center; font-size: 14px; margin-bottom: 44px; }
+
+  .stats {
+    display: grid; gap: 28px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+  .stat { text-align: center; }
+  .num {
+    font-size: clamp(38px, 6vw, 56px); font-weight: 800;
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    line-height: 1.2;
+  }
+  .label { color: #94a3b8; font-size: 15px; margin-top: 8px; }
+
+  .back { position: fixed; top: 20px; left: 20px; color: #94a3b8; text-decoration: none; font-size: 14px; }
+  .back:hover { color: #38bdf8; }
+</style>
+</head>
+<body>
+<a class="back" href="../../index.html">← 返回合集</a>
+
+<div class="board">
+  <h1>练习数据</h1>
+  <p class="sub">往下滚回来可以重复看到动画 · 数据目标值写在 data-target 里</p>
+  <div class="stats">
+    <div class="stat"><div class="num" data-target="3"  data-suffix=" 年">0</div><div class="label">AI 产品落地经验</div></div>
+    <div class="stat"><div class="num" data-target="4"  data-suffix=" 个">0</div><div class="label">已交付 AI 应用</div></div>
+    <div class="stat"><div class="num" data-target="50" data-suffix=" %">0</div><div class="label">客服响应提效</div></div>
+    <div class="stat"><div class="num" data-target="6"  data-suffix=" 个">0</div><div class="label">计划练手项目</div></div>
+  </div>
+</div>
+
+<script>
+  // 1. 元素进入视口才开始播放，滚走后归零，可以反复看
+  const nums = document.querySelectorAll('.num');
+
+  const animate = el => {
+    const target = +el.dataset.target;
+    const suffix = el.dataset.suffix || '';
+    const duration = 1400;            // 动画时长（毫秒）
+    const start = performance.now();
+
+    const tick = now => {
+      const p = Math.min((now - start) / duration, 1);      // 进度 0→1
+      const eased = 1 - Math.pow(1 - p, 3);                 // 缓动：先快后慢
+      el.textContent = Math.round(target * eased) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        animate(e.target);
+      } else {
+        e.target.textContent = '0';   // 滚出视口后归零
+      }
+    });
+  }, { threshold: 0.4 });
+
+  nums.forEach(n => io.observe(n));
+</script>
+</body>
+</html>
